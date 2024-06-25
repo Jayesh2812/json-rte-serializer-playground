@@ -1,0 +1,55 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serifß;
+}
+
+.params {
+  background: white;
+  padding: 0 3rem;
+}
+
+.input {
+  display: flex;
+  gap: 1rem;
+}
+.input label {
+  user-select: none;
+  cursor: pointer;
+  color: red;
+}
+.input input:checked + label {
+  color: green;
+}
+
+.input input {
+  display: none;
+}
+
+.main {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  max-height: 100vh;
+}
+.html {
+}
+.json {
+  grid-column: 2;
+  grid-row: 1 / -1;
+}
+.resize {
+  height: 100%;
+  width: 5px;
+  background: red;
+  cursor: col-resize;
+}
+.render {
+  overflow: scroll;
+  grid-row: 2;
+  grid-column: 1;
+}
