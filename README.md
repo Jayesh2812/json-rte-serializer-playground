@@ -1,1 +1,1 @@
-#  Playground for https://www.npmjs.com/package/@contentstack/json-rte-serializer
+#  Playground for [text](https://www.npmjs.com/package/@contentstack/json-rte-serializer)
