@@ -4,8 +4,6 @@ import { jsonToHtml, htmlToJson } from "@contentstack/json-rte-serializer";
 import Editor from "@monaco-editor/react";
 import prettify from "pretty";
 import collapse from "collapse-whitespace";
-import * as utils from "@contentstack/utils";
-import { JSDOM } from "jsdom";
 // const virtualConsole = new jsdom.VirtualConsole();
 // virtualConsole.on("error", () => {
 //   // No-op to skip console errors.
@@ -13,7 +11,6 @@ import { JSDOM } from "jsdom";
 export default function App() {
   const [html, setHtml] = useState("");
   const [json, setJson] = useState({});
-  const [autoUpdate, setAutoUpdate] = useState<'html' | 'json' | null>(null);
   const [allowNonStandardTags, setAllowNonStandardTags] = useState(false);
   const htmlRef = useRef<HTMLElement>(null)
 
@@ -45,7 +42,7 @@ export default function App() {
           theme="vs-dark"
           language="html"
           value={prettify(html)}
-          onChange={(s: string) => {
+          onChange={(s: any) => {
             if (!s) return;
             // if(autoUpdate === "html") return
             setHtml(s);
@@ -62,8 +59,7 @@ export default function App() {
           theme="vs-dark"
           defaultLanguage="json"
           value={JSON.stringify(json, null, 4)}
-          onClick = {() => setAutoUpdate('json')}
-          onChange={(s: string) => {
+          onChange={(s: any) => {
             if (!s) return;
             setJson(JSON.parse(s));
             const html = finalJsonToHtml(json);
