@@ -6,6 +6,7 @@ import HtmlPreview from "./HtmlPreview";
 import HtmlEditor from "./HtmlEditor";
 import JsonEditor from "./JsonEditor";
 import Footer from "./Footer";
+import React from 'react'
 
 // const virtualConsole = new jsdom.VirtualConsole();
 // virtualConsole.on("error", () => {
