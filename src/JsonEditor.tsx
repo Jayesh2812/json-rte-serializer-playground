@@ -1,4 +1,3 @@
-import React from 'react'
 import { Editor } from '@monaco-editor/react';
 
 function JsonEditor({json, onChange}: {json: any, onChange: (s: any) => void}) {

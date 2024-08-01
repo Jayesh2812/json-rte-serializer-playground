@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "./index.css";
 import { jsonToHtml, htmlToJson } from "@contentstack/json-rte-serializer";
 import collapse from "collapse-whitespace";
@@ -14,7 +14,6 @@ import Footer from "./Footer";
 export default function App() {
   const [html, setHtml] = useState("<h1>HTML</h1>");
   const [allowNonStandard, setAllowNonStandard] = useState(false);
-  const htmlRef = useRef<HTMLElement>(null);
 
   const finalHtmlToJson = (html: string) => {
     const htmlDomBody = new DOMParser().parseFromString(html, "text/html").body;
@@ -44,7 +43,7 @@ export default function App() {
   return (
     <div className="main">
       <HtmlEditor html={html} onChange={setHtml} />
-      <HtmlPreview html={html} onChange={setHtml}/>
+      <HtmlPreview html={html}/>
       <JsonEditor json={json} onChange={setJson} />
       <Footer
         htmlToJson={() => {

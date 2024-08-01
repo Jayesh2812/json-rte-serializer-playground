@@ -1,4 +1,3 @@
-import React from "react";
 
 function Footer({ htmlToJson, jsonToHtml, toggleNonStandard, allowNonStandard }: { htmlToJson: () => void; jsonToHtml: () => void, toggleNonStandard: () => void, allowNonStandard: boolean }) {
   return (

@@ -1,5 +1,4 @@
-import { Modal } from "antd";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 
 function HtmlPreview({ html }: { html: string }) {
