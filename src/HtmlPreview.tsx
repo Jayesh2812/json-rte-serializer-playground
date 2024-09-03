@@ -12,7 +12,7 @@ function HtmlPreview({ html }: { html: string }) {
       >
         Full screen
       </button>
-      <div className="render" contentEditable dangerouslySetInnerHTML={{ __html: html }}></div>
+      <div className="render" dangerouslySetInnerHTML={{ __html: html }}></div>
 
       {createPortal(
         <dialog

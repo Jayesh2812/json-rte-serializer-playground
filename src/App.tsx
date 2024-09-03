@@ -13,7 +13,11 @@ import Footer from "./Footer";
 // });
 export default function App() {
   const [html, setHtml] = useState("<h1>HTML</h1>");
-  const [allowNonStandard, setAllowNonStandard] = useState(false);
+  const [allowNonStandard, setAllowNonStandard] = useState(localStorage.getItem('allowNonStandard') === 'true');
+
+  useEffect(() => {
+    localStorage.setItem('allowNonStandard', allowNonStandard.toString())
+  }, [allowNonStandard])
 
   const finalHtmlToJson = (html: string) => {
     const htmlDomBody = new DOMParser().parseFromString(html, "text/html").body;
@@ -35,12 +39,17 @@ export default function App() {
   //   setJson(json);
   // }, [html]);
 
-  useEffect(() => {
-    const html = finalJsonToHtml(json);
-    setHtml(html);
-  }, [json])
-
+  // useEffect(() => {
+  //   const html = finalJsonToHtml(json);
+  //   setHtml(html);
+  // }, [json])
+useEffect(() => {
+  document.addEventListener('storage', (e) => {
+    console.log(e)
+  })
+}, [])
   return (
+    
     <div className="main">
       <HtmlEditor html={html} onChange={setHtml} />
       <HtmlPreview html={html}/>
