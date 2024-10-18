@@ -1,6 +1,4 @@
-import React from "react";
-
-function Header({ json, html }: any) {
+function Header({ json }: any) {
   return (
     <header>
       <button
@@ -27,7 +25,8 @@ function Header({ json, html }: any) {
             alert("URL Copied to clipboard");
           }
           catch(e){
-            alert(e.message);
+            if( e instanceof Error)
+              alert(e.message);
           }
         }}
       >
