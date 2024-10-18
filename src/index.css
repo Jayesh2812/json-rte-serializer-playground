@@ -8,6 +8,17 @@ body {
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serifß;
 }
 
+header {
+  /* position: fixed; */
+  width: 100%;
+  top: 0;
+  z-index: 1;
+  background: rgba(150, 150, 150, 0.5);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: right;
+}
+
 .params {
   background: white;
   padding: 0 3rem;
