@@ -1,4 +1,4 @@
-import { getFromBin, pasteToBin } from "../utils/index";
+import { getFromBin, pasteToBin } from "../src/utils";
 
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
