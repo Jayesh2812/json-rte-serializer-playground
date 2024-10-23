@@ -16,7 +16,7 @@ function Sidebar() {
   useEffect(() => {
     ContentstackSDK.init().then(async function (appSdk) {
       // Get the AppConfigWidget object
-
+      
       appSdk.location.SidebarWidget?.entry.onChange((updatedEntry) => {
         setEntry(updatedEntry);
       });
@@ -49,6 +49,10 @@ function Sidebar() {
           </option>
         ))}
       </select>
+
+      <button onClick={() => {
+        navigator.clipboard.writeText(JSON.stringify(get(entry, path || paths[0]), null, 2));
+      }}>Copy JSON</button>
 
       <HtmlEditor html={html ?? ""} height="100vh"/>
     </div>
