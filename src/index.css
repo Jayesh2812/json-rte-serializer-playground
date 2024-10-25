@@ -68,7 +68,19 @@ header {
 
 select{
   width: 100%;
-  margin-bottom: 1rem;
   margin-inline: 0 auto;
   padding: 0.5rem;
+}
+
+input[type="checkbox"]{
+  scale: 1.5;
+}
+
+.ReactModal__Content{
+  max-height: 95vh !important;
+  width: 95vw !important;
+}
+
+.ReactModal__Content__body {
+  max-height: calc( 95vh - 60px ) !important;
 }

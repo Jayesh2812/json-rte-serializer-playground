@@ -1,53 +1,41 @@
-import { useState } from "react";
-import { createPortal } from "react-dom";
+import { cbModal } from "@contentstack/venus-components";
+import {
+  ModalBody,
+  ModalHeader,
+} from "@contentstack/venus-components";
 
 function HtmlPreview({ html }: { html: string }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleFullScreen = () => {
+    cbModal({
+      component: FullScreenModal,
+      modalProps: {
+      size: 'max',
+      }
+    });
+  };
+
+  const FullScreenModal = ({ closeModal }: any) => (
+    <div id="123">
+      <ModalHeader closeModal={closeModal} title={"Render View"} />
+      <ModalBody>
+        <Render />
+      </ModalBody>
+    </div>
+  );
+
+  const Render = () => (
+    <div className="render" dangerouslySetInnerHTML={{ __html: html }}></div>
+  );
 
   return (
     <div style={{ position: "relative" }}>
       <button
         style={{ position: "absolute", right: 0 }}
-        onClick={() => setIsModalOpen(true)}
+        onClick={handleFullScreen}
       >
         Full screen
       </button>
-      <div className="render" dangerouslySetInnerHTML={{ __html: html }}></div>
-
-      {createPortal(
-        <dialog
-          open={isModalOpen}
-          style={{
-            width: "90vw",
-            height: "90vh",
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            padding: "20px",
-            boxShadow: "0 0 0 10000px rgba(0, 0, 0, .5)",
-            overflow: "scroll",
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              setIsModalOpen(false);
-            }
-          }}
-        >
-          <div
-            className="render"
-            dangerouslySetInnerHTML={{ __html: html }}
-          ></div>
-          <button
-            style={{ position: "absolute", right: 0, top: 0 }}
-            onClick={() => setIsModalOpen(false)}
-          >
-            {" "}
-            Close{" "}
-          </button>
-        </dialog>,
-        document.body
-      )}
+      <Render />
     </div>
   );
 }
