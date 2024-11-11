@@ -24,6 +24,8 @@ export default function App() {
       .then((res) => res.text())
       .then((data) => {
         setJson(JSON.parse(data));
+        const html = finalJsonToHtml(json, allowNonStandard);
+        setHtml(html);
       })
       .catch((e) => {
         console.error(e);
