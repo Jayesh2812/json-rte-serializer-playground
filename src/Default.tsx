@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./index.css";
 
 import HtmlPreview from "./HtmlPreview";
