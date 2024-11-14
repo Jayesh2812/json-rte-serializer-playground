@@ -1,6 +1,36 @@
-function Header({ json }: any) {
+import { useGlobalContext } from "./contexts/global.context";
+import prettify from "pretty";
+
+function Header() {
+
+
+  const { json, html, setHtml } = useGlobalContext();
+
+
   return (
     <header>
+
+      <button onClick={() => {
+
+        const defaultAttrsToRemove = ["data-.*", "aria-.*"];
+
+        const attributes = prompt("Enter the attributes to remove separated by comma (,)", defaultAttrsToRemove.join(", "))?.split(",").map((attr) => attr.trim());
+        if(!attributes) return;
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(`<body>${html}</body>`, "text/html").body;
+        const elements = doc.querySelectorAll("*");
+        elements.forEach((element) => {
+          attributes.forEach((attr) => {
+            const attrs = Array.from(element.attributes).map((a) => a.name).filter(a => a.match(attr));
+            attrs.forEach(a => element.removeAttribute(a))  
+          });
+        }); 
+
+      setHtml(prettify(doc.innerHTML));
+        
+      }}> Remove HTML Attributes </button>
+
       <button
         id="share-btn"
         onClick={async () => {

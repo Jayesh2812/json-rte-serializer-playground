@@ -16,7 +16,7 @@ header {
   background: rgba(150, 150, 150, 0.5);
   padding: 1rem 1.5rem;
   display: flex;
-  justify-content: right;
+  justify-content: space-between;
 }
 
 .params {

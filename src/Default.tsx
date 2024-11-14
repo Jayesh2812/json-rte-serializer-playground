@@ -7,13 +7,15 @@ import JsonEditor from "./JsonEditor";
 import Footer from "./Footer";
 import Header from "./Header";
 import { finalHtmlToJson, finalJsonToHtml } from "./utils";
+import { useGlobalContext } from "./contexts/global.context";
 
 // const virtualConsole = new jsdom.VirtualConsole();
 // virtualConsole.on("error", () => {
 //   // No-op to skip console errors.
 // });
 export default function App() {
-  
+    
+  const { html, setHtml, json, setJson, allowNonStandard, setAllowNonStandard } = useGlobalContext();
 
   useEffect(() => {
     const slug = new URLSearchParams(window.location.search).get("j");
@@ -33,11 +35,8 @@ export default function App() {
       ;
   }, []);
 
-  const [allowNonStandard, setAllowNonStandard] = useState(
-    !!parseInt(new URLSearchParams(window.location.search).get("a") ?? "0")
-  );
-  const [html, setHtml] = useState("<h1>HTML</h1>");
-  const [json, setJson] = useState(finalHtmlToJson(html, allowNonStandard));
+  
+  
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -47,7 +46,7 @@ export default function App() {
 
   return (
     <div>
-      <Header json={json} html={html} />
+      <Header />
       <div className="main">
         <HtmlEditor html={html} onChange={setHtml} />
         <HtmlPreview html={html} />
