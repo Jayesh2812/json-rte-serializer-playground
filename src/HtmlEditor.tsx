@@ -10,7 +10,7 @@ function HtmlEditor({html, onChange, height}: {html: string, onChange?: (s: stri
           theme="vs-dark"
           language="html"
           value={html}
-          onMount={(editor, monaco) => {
+          onMount={(_, monaco) => {
             emmetHTML(monaco);
             emmetCSS(monaco);
           }}
