@@ -12,12 +12,12 @@
     "connect:remote": "npm uninstall @contentstack/json-rte-serializer && npm install @contentstack/json-rte-serializer"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.5.1",
     "@contentstack/app-sdk": "^2.1.0",
     "@contentstack/json-rte-serializer": "^2.0.11",
     "@contentstack/utils": "^1.3.8",
-    "@contentstack/venus-components": "^2.2.5",
     "@monaco-editor/react": "^4.6.0",
-    "antd": "^5.19.4",
+    "antd": "^5.22.1",
     "emmet-monaco-es": "^5.5.0",
     "lodash.get": "^4.4.2",
     "react": "^18.3.1",

@@ -144,7 +144,7 @@ export function getAllJsonRtePaths(
             ...getAllJsonRtePaths(
               blockSchemaMap[block_uid],
               fieldValue[index][block_uid],
-              [parentPath, fieldUid, index, block_uid].join(".").slice(1)
+              [parentPath, fieldUid, index, block_uid].filter((i) => i).join('.'),
             )
           );
       }

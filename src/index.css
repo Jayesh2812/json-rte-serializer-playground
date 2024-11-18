@@ -18,25 +18,10 @@ header {
   display: flex;
   justify-content: space-between;
 }
-
-.params {
-  background: white;
-  padding: 0 3rem;
-}
-
 .input {
   display: flex;
   gap: 1rem;
 }
-.input label {
-  user-select: none;
-  cursor: pointer;
-  color: red;
-}
-.input input:checked + label {
-  color: green;
-}
-
 .input input {
   display: none;
 }

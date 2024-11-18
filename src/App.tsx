@@ -1,16 +1,24 @@
+import { ConfigProvider } from "antd";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Default from "./Default";
-import Sidebar from "./Sidebar";
-import "@contentstack/venus-components/build/main.css"
 
+const Default = React.lazy(() => import("./Default"));
+const Sidebar = React.lazy(() => import("./Sidebar"));
 export default function App() {
   return (
-    <Router>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#353b48",
+        },
+      }}
+    >
+      <Router>
         <Routes>
           <Route path="/sidebar" element={<Sidebar />} />
           <Route path="/" element={<Default />} />
         </Routes>
-    </Router>
+      </Router>
+    </ConfigProvider>
   );
 }
-

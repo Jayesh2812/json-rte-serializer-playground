@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import { useGlobalContext } from "./contexts/global.context";
 import prettify from "pretty";
 
@@ -10,7 +11,7 @@ function Header() {
   return (
     <header>
 
-      <button onClick={() => {
+      <Button variant="solid" color="default" onClick={() => {
 
         const defaultAttrsToRemove = ["data-.*", "aria-.*"];
 
@@ -29,9 +30,9 @@ function Header() {
 
       setHtml(prettify(doc.innerHTML));
         
-      }}> Remove HTML Attributes </button>
+      }}> Remove HTML Attributes </Button>
 
-      <button
+      <Button variant="solid" color="default"
         id="share-btn"
         onClick={async () => {
           const url = new URL(window.location.href);
@@ -61,7 +62,7 @@ function Header() {
         }}
       >
         Share with JSON
-      </button>
+      </Button>
     </header>
   );
 }

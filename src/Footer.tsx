@@ -1,3 +1,4 @@
+import { Button, Checkbox } from "antd";
 
 function Footer({ htmlToJson, jsonToHtml, toggleNonStandard, allowNonStandard }: { htmlToJson: () => void; jsonToHtml: () => void, toggleNonStandard: () => void, allowNonStandard: boolean }) {
   return (
@@ -12,31 +13,29 @@ function Footer({ htmlToJson, jsonToHtml, toggleNonStandard, allowNonStandard }:
         paddingBlock: "1em",
       }}
     >
-      <button
+      <Button color="default" variant="solid"
         onClick={htmlToJson}
       >
         HTML to JSON
-      </button>
+      </Button>
       <div className="params">
         <div className="input">
-          <input
+          <Checkbox
             id="allowNonStandardTypes"
-            type="checkbox"
             checked={allowNonStandard}
             onChange={() => {
               toggleNonStandard()
             }}
-          />
-          <label title="Click to change" htmlFor="allowNonStandardTypes">
+          >
             Allow Non Standard
-          </label>
+          </Checkbox>
         </div>
       </div>
-      <button
+      <Button color="default" variant="solid"
         onClick={jsonToHtml}
       >
         JSON TO HTML
-      </button>
+      </Button>
     </div>
   );
 }
