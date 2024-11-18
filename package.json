@@ -18,6 +18,7 @@
     "@contentstack/venus-components": "^2.2.5",
     "@monaco-editor/react": "^4.6.0",
     "antd": "^5.19.4",
+    "emmet-monaco-es": "^5.5.0",
     "lodash.get": "^4.4.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

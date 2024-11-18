@@ -1,5 +1,5 @@
 import { Editor } from '@monaco-editor/react';
-import prettify from "pretty";
+import { emmetHTML, emmetCSS } from "emmet-monaco-es";
 
 function HtmlEditor({html, onChange, height}: {html: string, onChange?: (s: string) => void, height?: string}) {
   return (
@@ -9,7 +9,11 @@ function HtmlEditor({html, onChange, height}: {html: string, onChange?: (s: stri
           height= {height ?? "50vh" }
           theme="vs-dark"
           language="html"
-          value={prettify(html)}
+          value={html}
+          onMount={(editor, monaco) => {
+            emmetHTML(monaco);
+            emmetCSS(monaco);
+          }}
           onChange={(s: any) => {
             if (!s) return;
             onChange?.(s);
