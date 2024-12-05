@@ -2,6 +2,7 @@
 import { FullscreenExitOutlined, FullscreenOutlined } from "@ant-design/icons";
 import { Button, Modal } from "antd";
 import { useState } from "react";
+import { closeFullModal, showFullModal } from "./utils";
 
 function HtmlPreview({ html }: { html: string }) {
   const Render = () => (
@@ -11,29 +12,19 @@ function HtmlPreview({ html }: { html: string }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = async () => {
-    if(window.iframeRef) window.iframeRef.style.opacity = 0;
-    await window.postRobot?.sendToParent('goFullscreen', {
-      open: true
-    });
-
+    showFullModal()
     setIsModalOpen(true);
   };
 
-  const closeModal = async () => {
-    await window.postRobot?.sendToParent('goFullscreen', {
-      open: false
-    });
-    if(window.iframeRef) window.iframeRef.style.opacity = null;
 
-  }
 
   const handleOk = () => {
-    closeModal();
+    closeFullModal();
     setIsModalOpen(false);
   };
 
   const handleCancel = () => {
-    closeModal();
+    closeFullModal();
     setIsModalOpen(false);
   };
 

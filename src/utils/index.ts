@@ -22,13 +22,13 @@ export const pasteToBin = async (dataToStore: string) => {
       "https://pastebin.com/api/api_post.php",
       requestOptions
     );
-    if(!response.ok){
+    if (!response.ok) {
       throw new Error(await response.text());
     }
     const result = await response.text();
     return [result];
   } catch (error) {
-    return [,error];
+    return [, error];
   }
 };
 
@@ -46,13 +46,13 @@ export const getFromBin = async (id: string) => {
       requestOptions
     );
 
-    if(!response.ok){
+    if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const result = await response.text();
     return [result];
   } catch (error) {
-    return [, error]
+    return [, error];
   }
 };
 
@@ -144,11 +144,27 @@ export function getAllJsonRtePaths(
             ...getAllJsonRtePaths(
               blockSchemaMap[block_uid],
               fieldValue[index][block_uid],
-              [parentPath, fieldUid, index, block_uid].filter((i) => i).join('.'),
+              [parentPath, fieldUid, index, block_uid]
+                .filter((i) => i)
+                .join(".")
             )
           );
       }
     }
   }
   return paths;
+}
+
+export async function showFullModal() {
+  if (window.iframeRef) window.iframeRef.style.opacity = 0;
+  await window.postRobot?.sendToParent("goFullscreen", {
+    open: true,
+  });
+}
+
+export async function closeFullModal() {
+  await window.postRobot?.sendToParent("goFullscreen", {
+    open: false,
+  });
+  if (window.iframeRef) window.iframeRef.style.opacity = null;
 }

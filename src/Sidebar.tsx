@@ -1,12 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import ContentstackSDK from "@contentstack/app-sdk";
 import get from "lodash.get";
 import HtmlEditor from "./HtmlEditor";
-import { finalJsonToHtml, getAllJsonRtePaths } from "./utils";
+import { closeFullModal, finalJsonToHtml, getAllJsonRtePaths, showFullModal } from "./utils";
 import HtmlPreview from "./HtmlPreview";
-import { Button, notification, Select, Switch } from "antd";
-import { CopyFilled } from "@ant-design/icons";
+import { Button, Modal, notification, Select, Switch } from "antd";
+import { CopyFilled, ImportOutlined } from "@ant-design/icons";
+import JsonEditor from "./JsonEditor";
 
 function Sidebar() {
   const [entry, setEntry] = React.useState({} as any);
@@ -46,6 +47,16 @@ function Sidebar() {
   }, [entry, path]);
 
   const [api, contextHolder] = notification.useNotification();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  function handleOk() {
+    closeFullModal();
+    setIsModalOpen(false);
+  }
+  function handleCancel() {
+    closeFullModal();
+    setIsModalOpen(false);
+  }
 
   return (
     <div>
@@ -90,7 +101,19 @@ function Sidebar() {
             });
           }}
         ></Button>
+
+        <Button
+        icon={<ImportOutlined />}
+        onClick={() => {
+          showFullModal();
+          setIsModalOpen(true);
+        }}
+        />
       </div>
+
+      <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} styles={{content: {maxHeight: "90vh", overflow: "scroll"} }}>
+        <JsonEditor json={get(entry, path || paths[0])} onChange={() => {}}/>
+      </Modal>
 
       {showRendered ? (
         <HtmlEditor html={html ?? ""} height="100vh" />
