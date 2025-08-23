@@ -40,9 +40,9 @@ function Sidebar() {
     }
 
     if (!path) {
-      setHtml(finalJsonToHtml(get(entry, paths[0]), false));
+      setHtml(finalJsonToHtml(get(entry, paths[0])));
     } else {
-      setHtml(finalJsonToHtml(get(entry, path), false));
+      setHtml(finalJsonToHtml(get(entry, path)));
     }
   }, [entry, path]);
 

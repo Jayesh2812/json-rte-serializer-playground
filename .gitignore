@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 .vercel
 .env
+.env*.local
+src/constants/json-rte-serializer.ts

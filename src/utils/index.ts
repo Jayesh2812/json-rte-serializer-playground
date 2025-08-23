@@ -1,6 +1,9 @@
 // Setup get and post to paste bin api using fetch
-import { jsonToHtml, htmlToJson } from "@contentstack/json-rte-serializer";
+import { jsonToHtml, htmlToJson, IHtmlToJsonOptions, IJsonToHtmlOptions } from "@contentstack/json-rte-serializer";
 import collapse from "collapse-whitespace";
+import { parse } from "@babel/parser";
+import traverse from "@babel/traverse";
+import ts from "typescript";
 
 export const pasteToBin = async (dataToStore: string) => {
   const myHeaders = new Headers();
@@ -56,18 +59,16 @@ export const getFromBin = async (id: string) => {
   }
 };
 
-export const finalHtmlToJson = (html: string, allowNonStandard: boolean) => {
+export const finalHtmlToJson = (html: string, options: IHtmlToJsonOptions) => {
   const htmlDomBody = new DOMParser().parseFromString(html, "text/html").body;
   collapse(htmlDomBody);
   htmlDomBody.normalize();
-  const jsonValue = htmlToJson(htmlDomBody, {
-    allowNonStandardTags: allowNonStandard,
-  })!;
-  return jsonValue;
+  const jsonValue = htmlToJson(htmlDomBody, options);
+  return jsonValue ?? {};
 };
 
-export const finalJsonToHtml = (json: any, allowNonStandard: boolean) => {
-  return jsonToHtml(json, { allowNonStandardTypes: allowNonStandard });
+export const finalJsonToHtml = (json: any, options: IJsonToHtmlOptions = {}) => {
+  return jsonToHtml(json, options);
 };
 
 function getFieldPath(
@@ -167,4 +168,37 @@ export async function closeFullModal() {
     open: false,
   });
   if (window.iframeRef) window.iframeRef.style.opacity = null;
+}
+
+function stripTypes(code: string) {
+  return ts.transpileModule(code, {
+    compilerOptions: { module: ts.ModuleKind.ESNext },
+  }).outputText;
+}
+
+export function extractOptions(code: string) {
+  const jsCode = stripTypes(code)!;
+  console.log("🚀 ~ extractOptions ~ jsCode:", jsCode);
+
+  const ast = parse(jsCode, {
+    sourceType: "module",
+    plugins: ["typescript"],
+  });
+
+  let optionsObject = {};
+
+  traverse(ast, {
+    VariableDeclarator(path: any) {
+      if (
+        path.node.id.type === "Identifier" &&
+        path.node.id.name.includes("Options")
+      ) {
+        const start = path.node.init.start;
+        const end = path.node.init.end;
+        optionsObject = eval(`(${jsCode.slice(start, end)})`);
+      }
+    },
+  });
+
+  return optionsObject;
 }

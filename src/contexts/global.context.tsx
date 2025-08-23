@@ -1,16 +1,12 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { finalHtmlToJson } from "../utils";
+import React, { createContext, useContext, ReactNode, useReducer, useEffect } from "react";
+import { globalReducer, initialState, ACTIONS, IState, Action } from "../reducers/global.reducer";
+import { finalJsonToHtml } from "../utils";
 
 
-type IJSON = Record<string, unknown>;
 
 interface GlobalContextProps {
-  html: string;
-  json: Record<string, IJSON>;
-  allowNonStandard: boolean;
-  setHtml: React.Dispatch<React.SetStateAction<string>>;
-  setJson: React.Dispatch<React.SetStateAction<IJSON>>;
-  setAllowNonStandard: React.Dispatch<React.SetStateAction<boolean>>;
+  state: IState;
+  dispatch: React.Dispatch<Action>;
 }
 
 const GlobalContext = createContext<GlobalContextProps | undefined>(undefined);
@@ -18,14 +14,14 @@ const GlobalContext = createContext<GlobalContextProps | undefined>(undefined);
 export const GlobalProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [html, setHtml] = useState("<h1>HTML</h1>");
-  const [allowNonStandard, setAllowNonStandard] = useState(
-    !!parseInt(new URLSearchParams(window.location.search).get("a") ?? "0")
-  );
-  const [json, setJson] = useState(finalHtmlToJson(html, allowNonStandard));
+  const [state, dispatch] = useReducer(globalReducer, initialState);
+
+  useEffect(() => {
+    dispatch({ type: ACTIONS.SET_HTML, payload: { html: finalJsonToHtml(initialState.json, initialState.jsonToHtmlOptions) } });
+  }, []);
 
   return (
-    <GlobalContext.Provider value={{ html, json, setHtml, setJson, allowNonStandard, setAllowNonStandard }}>
+    <GlobalContext.Provider value={{ state, dispatch }}>
       {children}
     </GlobalContext.Provider>
   );
