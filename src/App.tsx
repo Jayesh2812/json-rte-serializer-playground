@@ -1,6 +1,7 @@
 import { ConfigProvider } from "antd";
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 
 const Default = React.lazy(() => import("./Default"));
 const Sidebar = React.lazy(() => import("./Sidebar"));
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/" element={<Default />} />
         </Routes>
       </Router>
+      <Analytics />
     </ConfigProvider>
   );
 }
