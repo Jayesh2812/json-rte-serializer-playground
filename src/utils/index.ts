@@ -3,7 +3,7 @@ import { jsonToHtml, htmlToJson, IHtmlToJsonOptions, IJsonToHtmlOptions } from "
 import collapse from "collapse-whitespace";
 import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
-import ts from "typescript";
+import { transform } from "sucrase";
 
 export const pasteToBin = async (dataToStore: string) => {
   const myHeaders = new Headers();
@@ -171,9 +171,10 @@ export async function closeFullModal() {
 }
 
 function stripTypes(code: string) {
-  return ts.transpileModule(code, {
-    compilerOptions: { module: ts.ModuleKind.ESNext },
-  }).outputText;
+  const { code: jsCode } = transform(code, {
+    transforms: ["typescript"],
+  });
+  return jsCode;
 }
 
 export function extractOptions(code: string) {

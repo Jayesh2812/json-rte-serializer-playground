@@ -10,6 +10,7 @@ import { extractOptions } from "./utils";
 
 import { stringify } from "javascript-stringify";
 import { ACTIONS } from "./reducers/global.reducer";
+import { isEmpty } from "lodash";
 
 const TabIds = {
   J2H: "j2h",
@@ -299,11 +300,11 @@ function Footer({
 
   const htmlToJsonInterfacesString = `\n\n${TYPE_DEFS.IHtmlToJsonOptions}\n\n${TYPE_DEFS.IHtmlToJsonElementTagsAttributes}\n\n${TYPE_DEFS.IHtmlToJsonTextTags}\n\n${TYPE_DEFS.IHtmlToJsonElementTags}\n\n${TYPE_DEFS.IAnyObject}`
 
-  const htmlToJsonValue = `// Add configuration below in the htmlToJsonOptions object\nconst htmlToJsonOptions: IHtmlToJsonOptions = ${stringify(htmlToJsonOptions,null,4)}${htmlToJsonInterfacesString}`
+  const htmlToJsonValue = `// Add configuration below in the htmlToJsonOptions object\nconst htmlToJsonOptions: IHtmlToJsonOptions = ${ isEmpty(htmlToJsonOptions) ? "{\n\t\n}" : stringify(htmlToJsonOptions,null,4)}${htmlToJsonInterfacesString}`
 
   const jsonToHtmlInterfacesString = `\n\n${TYPE_DEFS.IJsonToHtmlOptions}\n\n${TYPE_DEFS.IJsonToHtmlElementTags}\n\n${TYPE_DEFS.IJsonToHtmlAllowedEmptyAttributes}\n\n${TYPE_DEFS.IJsonToHtmlTextTags}\n\n${TYPE_DEFS.IAnyObject}`
 
-  const jsonToHtmlValue = `// Add configuration below in the jsonToHtmlOptions object\nconst jsonToHtmlOptions: IJsonToHtmlOptions = ${stringify(jsonToHtmlOptions,null,4)}${jsonToHtmlInterfacesString}`
+  const jsonToHtmlValue = `// Add configuration below in the jsonToHtmlOptions object\nconst jsonToHtmlOptions: IJsonToHtmlOptions = ${ isEmpty(jsonToHtmlOptions) ? "{\n\t\n}" : stringify(jsonToHtmlOptions,null,4)}${jsonToHtmlInterfacesString}`
 
   const items: TabsProps["items"] = [
     {
