@@ -43,16 +43,21 @@ function Footer({
   const handleOk = () => {
     const h2jOptions = H2JEditorRef.current?.getModel()?.getValue();
     const j2hOptions = J2HEditorRef.current?.getModel()?.getValue();
-    const h2jOptionsObject = extractOptions(h2jOptions!);
-    const j2hOptionsObject = extractOptions(j2hOptions!);
-    dispatch({
-      type: ACTIONS.SET_HTML_TO_JSON_OPTIONS,
-      payload: h2jOptionsObject,
-    });
-    dispatch({
-      type: ACTIONS.SET_JSON_TO_HTML_OPTIONS,
-      payload: j2hOptionsObject,
-    });
+
+    if (h2jOptions) {
+      const h2jOptionsObject = extractOptions(h2jOptions);
+      dispatch({
+        type: ACTIONS.SET_HTML_TO_JSON_OPTIONS,
+        payload: h2jOptionsObject,
+      });
+    }
+    if (j2hOptions) {
+      const j2hOptionsObject = extractOptions(j2hOptions);
+      dispatch({
+        type: ACTIONS.SET_JSON_TO_HTML_OPTIONS,
+        payload: j2hOptionsObject,
+      });
+    }
 
     setIsModalOpen(false);
   };
@@ -278,15 +283,69 @@ function Footer({
           setTimeout(() => ensureEditableLine(), 100);
         }
       }
-      if (!isInEditableArea && e.shiftKey ) {
 
-        e.preventDefault();
-        e.stopPropagation();
-        console.log(
-          `Blocked edit on line ${lineNumber}, editable area: ${
-            configStartLine + 1
-          }-${configEndLine - 1}`
+      // Only block editing events when not in editable area, allow navigation
+      if (!isInEditableArea) {
+        // Define navigation keys that should be allowed
+        const navigationKeys = [
+          monaco.KeyCode.UpArrow,
+          monaco.KeyCode.DownArrow,
+          monaco.KeyCode.LeftArrow,
+          monaco.KeyCode.RightArrow,
+          monaco.KeyCode.PageUp,
+          monaco.KeyCode.PageDown,
+          monaco.KeyCode.Home,
+          monaco.KeyCode.End,
+          monaco.KeyCode.Escape,
+          monaco.KeyCode.F5, // Refresh
+        ];
+
+        // Define common keyboard shortcuts that should be allowed
+        const isCommonShortcut = (
+          // Copy, Cut, Paste
+          ((e.ctrlKey || e.metaKey) && (e.keyCode === monaco.KeyCode.KeyC || e.keyCode === monaco.KeyCode.KeyX || e.keyCode === monaco.KeyCode.KeyV)) ||
+          // Undo, Redo
+          ((e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyZ) ||
+          ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === monaco.KeyCode.KeyZ) ||
+          (e.ctrlKey && e.keyCode === monaco.KeyCode.KeyY) ||
+          // Find, Find Next, Find Previous
+          ((e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyF) ||
+          ((e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyG) ||
+          ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === monaco.KeyCode.KeyG) ||
+          // Browser refresh
+          ((e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyR) ||
+          (e.keyCode === monaco.KeyCode.F5) ||
+          // Browser navigation
+          ((e.ctrlKey || e.metaKey) && (e.keyCode === monaco.KeyCode.LeftArrow || e.keyCode === monaco.KeyCode.RightArrow)) ||
+          // Tab switching
+          ((e.ctrlKey || e.metaKey) && (e.keyCode === monaco.KeyCode.Tab)) ||
+          ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === monaco.KeyCode.Tab) ||
+          // Window/App shortcuts
+          ((e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyW) ||
+          ((e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyN) ||
+          ((e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyT) ||
+          // Developer tools
+          (e.keyCode === monaco.KeyCode.F12) ||
+          ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === monaco.KeyCode.KeyI)
         );
+
+        const isNavigationKey = navigationKeys.includes(e.keyCode);
+        const isModifierOnly = (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) && 
+                               (e.keyCode === monaco.KeyCode.Ctrl || 
+                                e.keyCode === monaco.KeyCode.Alt || 
+                                e.keyCode === monaco.KeyCode.Shift || 
+                                e.keyCode === monaco.KeyCode.Meta);
+
+        // Block editing events but allow navigation and common shortcuts
+        if (!isNavigationKey && !isModifierOnly && !isCommonShortcut) {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log(
+            `Blocked edit on line ${lineNumber}, editable area: ${
+              configStartLine + 1
+            }-${configEndLine - 1}`
+          );
+        }
       }
     });
 
@@ -352,6 +411,7 @@ function Footer({
         background: "rgba(150, 150, 150, 0.5)",
         bottom: 0,
         paddingBlock: "1em",
+        zIndex: 11,
       }}
     >
       <Button
