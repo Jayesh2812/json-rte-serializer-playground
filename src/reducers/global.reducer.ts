@@ -6,25 +6,29 @@ import {
 import * as z from "zod";
 
 // Zod schemas for function signatures that match the library types
-const jsonToHtmlElementTagFn = z.function()
-  .args(z.string(), z.string(), z.any(), z.object({}).optional())
-  .returns(z.string());
+const jsonToHtmlElementTagFn = z.function({
+  input:[z.string(), z.string(), z.any(), z.object({}).optional()],
+  output: z.string(),
+});
 
-const jsonToHtmlTextTagFn = z.function()
-  .args(z.any(), z.any())
-  .returns(z.string());
+const jsonToHtmlTextTagFn = z.function({
+  input: [z.any(), z.any()],
+  output: z.string(),
+});
 
-const htmlToJsonElementTagFn = z.function()
-  .args(z.any()) // HTMLElement
-  .returns(z.object({
+const htmlToJsonElementTagFn = z.function({
+  input: [z.any()], // HTMLElement
+  output: z.object({
     type: z.string(),
     attrs: z.any(),
     uid: z.string().optional(),
-  }));
+  }),
+});
 
-const htmlToJsonTextTagFn = z.function()
-  .args(z.any()) // HTMLElement  
-  .returns(z.any()); // IAnyObject
+const htmlToJsonTextTagFn = z.function({
+  input: [z.any()], // HTMLElement  
+  output: z.any(), // IAnyObject
+});
 
 export const jsonToHtmlOptionsSchema = z.object({
   allowNonStandardTypes: z.boolean().optional(),
@@ -32,14 +36,14 @@ export const jsonToHtmlOptionsSchema = z.object({
   customTextWrapper: z.record(z.string(), jsonToHtmlTextTagFn).optional(),
   allowedEmptyAttributes: z.record(z.string(), z.array(z.string())).optional(),
   addNbspForEmptyBlocks: z.boolean().optional(),
-}) as z.ZodType<IJsonToHtmlOptions>;
+}).strict() as z.ZodType<IJsonToHtmlOptions>;
 
 export const htmlToJsonOptionsSchema: z.ZodType<IHtmlToJsonOptions> = z.object({
   allowNonStandardTags: z.boolean().optional(),
   customElementTags: z.record(z.string(), htmlToJsonElementTagFn).optional(),
   customTextTags: z.record(z.string(), htmlToJsonTextTagFn).optional(),
   addNbspForEmptyBlocks: z.boolean().optional(),
-}) as z.ZodType<IHtmlToJsonOptions>;
+}).strict() as z.ZodType<IHtmlToJsonOptions>;
 
 
 export interface IState {

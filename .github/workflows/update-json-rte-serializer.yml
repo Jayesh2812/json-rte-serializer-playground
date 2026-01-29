@@ -1,0 +1,114 @@
+name: Update json-rte-serializer dependency
+
+on:
+  schedule:
+    # Run daily at 9 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check-and-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for updates
+        id: check-updates
+        run: |
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').dependencies['@contentstack/json-rte-serializer']")
+          echo "Current version: $CURRENT_VERSION"
+          
+          # Get latest version from npm
+          LATEST_VERSION=$(npm view @contentstack/json-rte-serializer version)
+          echo "Latest version: $LATEST_VERSION"
+          
+          # Clean versions for comparison (remove ^ and ~ prefixes)
+          CURRENT_CLEAN=$(echo $CURRENT_VERSION | sed 's/[^0-9.]//g')
+          
+          echo "current-version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "latest-version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          echo "current-clean=$CURRENT_CLEAN" >> $GITHUB_OUTPUT
+          
+          # Compare versions
+          if [ "$CURRENT_CLEAN" != "$LATEST_VERSION" ]; then
+            echo "update-available=true" >> $GITHUB_OUTPUT
+            echo "Update available: $CURRENT_CLEAN -> $LATEST_VERSION"
+          else
+            echo "update-available=false" >> $GITHUB_OUTPUT
+            echo "No update available"
+          fi
+
+      - name: Update package.json
+        if: steps.check-updates.outputs.update-available == 'true'
+        run: |
+          # Update the dependency to the latest version
+          npm install @contentstack/json-rte-serializer@${{ steps.check-updates.outputs.latest-version }} --save
+          
+          # Run extract-types script if it exists
+          if npm run extract-types --if-present; then
+            echo "Successfully ran extract-types script"
+          fi
+
+      - name: Check for changes
+        if: steps.check-updates.outputs.update-available == 'true'
+        id: check-changes
+        run: |
+          if git diff --quiet; then
+            echo "has-changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has-changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.check-updates.outputs.update-available == 'true' && steps.check-changes.outputs.has-changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update @contentstack/json-rte-serializer to v${{ steps.check-updates.outputs.latest-version }}"
+          title: "chore: update @contentstack/json-rte-serializer to v${{ steps.check-updates.outputs.latest-version }}"
+          body: |
+            ## 🔄 Dependency Update
+
+            This PR automatically updates `@contentstack/json-rte-serializer` from `${{ steps.check-updates.outputs.current-version }}` to `^${{ steps.check-updates.outputs.latest-version }}`.
+
+            ### Changes
+            - Updated `@contentstack/json-rte-serializer` dependency
+            - Regenerated package-lock.json
+            - Ran extract-types script to update type definitions
+
+            ### What to do next
+            1. Review the changes
+            2. Test the application locally
+            3. Merge if everything looks good
+
+            ---
+            *This PR was created automatically by the update-json-rte-serializer workflow.*
+          branch: update-json-rte-serializer-v${{ steps.check-updates.outputs.latest-version }}
+          branch-suffix: timestamp
+          delete-branch: true
+          base: master
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.check-updates.outputs.update-available }}" == "true" ]; then
+            if [ "${{ steps.check-changes.outputs.has-changes }}" == "true" ]; then
+              echo "✅ Created PR to update @contentstack/json-rte-serializer from ${{ steps.check-updates.outputs.current-version }} to ^${{ steps.check-updates.outputs.latest-version }}"
+            else
+              echo "ℹ️ Update available but no changes detected in files"
+            fi
+          else
+            echo "ℹ️ No update available. Current version ${{ steps.check-updates.outputs.current-version }} is up to date."
+          fi

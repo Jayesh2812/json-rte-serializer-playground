@@ -12,12 +12,12 @@ import { stringify } from "javascript-stringify";
 import { ACTIONS } from "./reducers/global.reducer";
 import { isEmpty } from "lodash";
 
-const TabIds = {
+export const TabIds = {
   J2H: "j2h",
   H2J: "h2j",
 } as const;
 
-type ITabId = (typeof TabIds)[keyof typeof TabIds];
+export type ITabId = (typeof TabIds)[keyof typeof TabIds];
 
 function Footer({
   htmlToJson,
